@@ -1,4 +1,19 @@
-# canadyworkshop/minecraft
+# canadyworkshop/minecraft-dns
+
+Minecraft Bedrock edition can only connect to "featured" external servers by default. It's capable of connecting to any bedrock server (as long as the verison matches) the but UI does not allow specifing a custom FQDN or IP address. To get around this, this image provides a DNS server that allows you to specify your own IP address for one or more of the "favorite" servers. Once the console is pointed to this DNS server, connecting to the "featured" server that has had the IP replaced will result in connecting to your server. 
+
+## General Usage
+
+To use the image, deploy it to a location that your console can connect to. This could be a local system or a cloud server.
+
+When deploying do the following.
+
+* Configure the local container port 8001 to forward to 53. ```-p 8001:53/tcp```
+* Configure any environmental variables you need for IP addresses. ```--env CUBECRAFT='10.1.1.1'
+
+Configure your console to use the system running this container for DNS.
+
+
 
 ## Configuration
 
