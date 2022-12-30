@@ -4,8 +4,8 @@ RUN apk add dnsmasq
 COPY dnsmasq.conf /etc/dnsmasq.conf
 COPY start.sh ./
 
-CMD ["./start.sh"]
-#CMD ["dnsmasq", "-d", "-p", "8001"]
-EXPOSE 8001/udp
+ENTRYPOINT [ "./start.sh"]
+#CMD ["dnsmasq", "-d", "-p", "53"]
+EXPOSE 53/udp
 
 

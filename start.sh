@@ -43,4 +43,4 @@ echo $ALL_SERVERS
 
 cat /etc/dnsmasq.conf
 
-dnsmasq -d -p 8001
+dnsmasq -d
