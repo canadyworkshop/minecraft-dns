@@ -15,4 +15,4 @@ jobs:
       - name: Build image
         run:  docker build . --tag ghcr.io/canadyworkshop/minecraft-dns:latest
       - name: Push image
-        run: docker push ghcr.io/deselikem/hello-docker-gcr-demo:latest
+        run: docker push ghcr.io/canadyworkshop/minecraft-dns:latest
