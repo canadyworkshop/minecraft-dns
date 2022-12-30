@@ -1,8 +1,8 @@
 name: Create and publish a Docker image on release creation
 
 on:
-  push:
-    branches: ['release']
+  release:
+    types: [published]
   workflow_dispatch:
 
 env:
