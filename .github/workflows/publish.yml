@@ -2,15 +2,15 @@ name: publish
 jobs:
   publish-docker-image:
     runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v2
-    - name: Build image
-      run:  docker build . --tag ghcr.io/canadyworkshop/minecraft-dns:latest
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        assword: ${{ secrets.GITHUB_TOKEN }}
-    - name: Push image
-      run: docker push ghcr.io/deselikem/hello-docker-gcr-demo:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image
+        run:  docker build . --tag ghcr.io/canadyworkshop/minecraft-dns:latest
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          assword: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push image
+        run: docker push ghcr.io/deselikem/hello-docker-gcr-demo:latest
