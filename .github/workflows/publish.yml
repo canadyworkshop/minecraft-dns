@@ -1,7 +1,7 @@
 name: publish
 jobs:
   publish-docker-image:
-    uns-on: ubuntu-latest
+    runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v2
     - name: Build image
