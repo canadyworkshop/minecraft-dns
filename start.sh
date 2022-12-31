@@ -36,11 +36,4 @@ else
 
 fi
 
-
-
-
-echo $ALL_SERVERS
-
-cat /etc/dnsmasq.conf
-
 dnsmasq -d

@@ -1,25 +1,17 @@
 # canadyworkshop/minecraft-dns
 
-Minecraft Bedrock edition can only connect to "featured" external servers by default. It's capable of connecting to any bedrock server (as long as the verison matches) the but UI does not allow specifing a custom FQDN or IP address. To get around this, this image provides a DNS server that allows you to specify your own IP address for one or more of the "favorite" servers. Once the console is pointed to this DNS server, connecting to the "featured" server that has had the IP replaced will result in connecting to your server. 
+The minecraft-dns image provides a DNS server that optionally replaces the DNS entries for the "featured" servers of Minecraft Bedrock. This allows consoles such as the Nintendo Switch to connect to customer servers by configuring the Switch to use this DNS server for name resolution.
 
-## General Usage
+## Usage
 
-To use the image, deploy it to a location that your console can connect to. This could be a local system or a cloud server.
+1. Deploy minecraft-dns image using one of many container services. (Docker, K3s, K8s, containerd, etc)
+    - Specify which "featured" servers to replace with custom server IP address using enviornmental variables.
+2. Configure the consoles network configuration to use the IP of the container for DNS resolution.
+3. Connect to the "featured" server in Minecraft that was replaced. The name should reflect your customer server.
 
-When deploying do the following.
+## Configuration Options
 
-* Configure the local container port 8001 to forward to 53. ```-p 8001:53/tcp```
-* Configure any environmental variables you need for IP addresses. ```--env CUBECRAFT='10.1.1.1'
-
-Configure your console to use the system running this container for DNS.
-
-
-
-## Configuration
-
-By default the container will not provide DNS record replacement for any of the default "featured" mincecraft servers. You may optionally specifiy which server and IP to use by setting the apporpriate enviornmental variable.
-
-### Configuration Options
+**NOTE:** If ALL_SERVERS is provided all others are ignored. 
 
 |Server|Env|Notes|
 |-------|----|-----|
@@ -31,3 +23,44 @@ Cube Craft|CUBECRAFT|Sets the DNS for CubeCraft to the IP this env is set to.
 The Hive|THE_HIVE|Sets the DNS for TheHive to the IP this env is set to.
 Mineville|MINEVILLE|Sets the DNS for Mineville to the IP this env is set to.
 
+
+### Docker
+
+Using docker on a local machine is the simplest way to run it for local networks. 
+
+```
+docker run -p 53:53/udp --env=ALL_SERVERS='xxx.xxx.xxx.xxx' hcr.io/canadyworkshop/minecraft-dns:latest
+```
+
+### GCP (Using Compute Engine)
+
+Using GCP is an easy way to run on the public internet. GCP offer a free teir for their compute engine that can be used to operate this DNS server at no cost. 
+
+**NOTE:** The free teir only allows a single compute engine instance. If you are already using the instance a second will not be free. 
+
+## Deploy on GCP
+
+This section provides details on how to deploy onto the GCP free tier. This is not the only way but the simplest way for someone new to GCP.
+
+1. Create a [GCP account](https://cloud.google.com/). 
+2. Select the default project. 
+3. Navigate to the Compute Engine -> VM instances ![](./doc_images/compute_engine_vms.png)
+4. Click Create Instance ![](./doc_images/create_instance.png)
+5. Provide a reasonable name for the instance such as minecraft-custom-dns.
+6. Make sure to select the [correct machine type for the free tier](https://cloud.google.com/free?utm_source=google&utm_medium=cpc&utm_campaign=na-US-all-en-dr-bkws-all-all-trial-e-dr-1011347&utm_content=text-ad-none-any-DEV_c-CRE_518216250706-ADGP_Desk%20%7C%20BKWS%20-%20EXA%20%7C%20Txt%20~%20GCP%20~%20Pricing_Pricing_Free-KWID_43700061498279726-kwd-310728589823&utm_term=KW_gcp%20free%20tier-ST_gcp%20free%20tier&gclid=Cj0KCQiAtbqdBhDvARIsAGYnXBMctZa3DylKhesdYb_KAWSzqCaQbWrmJix_ssMEf_QSzAL2MRVUrhEaAmT0EALw_wcB&gclsrc=aw.ds). ![](./doc_images/instance_type.png)
+7. Click the Deploy Container button. This will configure the Compute Engine instance to run the container on startup.
+8. Configure the container to use the proper image and set the variables as needed for your config.![](./doc_images/container_config.png)
+9. Expand the networking section and add a new tag named minecraft-dns. This tag will later be used to allow DNS queries to the instance across the GCP firewall.
+10. Click create.
+11. Navigate to the VPC Firewall section. ![](./doc_images/vpc_firewall.png)
+12. Click Create Firewall Rule ![](./doc_images/create_fw_rule.png)
+13. Provide a reasonable name for the rule. ![](./doc_images/fw_rule_name.png)
+14. Configure the rule.
+    - Targets: Specified target tags.
+    - Target tags: Add the same tag you used on the instance.
+    - Set the source IPv4 range to 0.0.0.0/0 to allow everything. Optionally limit if you would like.
+    - Click Specified protcols and ports
+    - Check UDP
+    - Add port 53 ![](./doc_images/fw_rule_rules.png)
+15. Create rule.
+16. Lookup external IP address of VM. This is the IP that should be configured on the consoles for DNS. By defaul the address is emphermal meaning it will change if the VM is restarted. You may reserve the IP to prevent it changing but there will be a charge. ![](./doc_images/external_ip.png)
