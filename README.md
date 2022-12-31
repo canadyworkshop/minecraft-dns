@@ -23,7 +23,6 @@ Cube Craft|CUBECRAFT|Sets the DNS for CubeCraft to the IP this env is set to.
 The Hive|THE_HIVE|Sets the DNS for TheHive to the IP this env is set to.
 Mineville|MINEVILLE|Sets the DNS for Mineville to the IP this env is set to.
 
-
 ### Docker
 
 Using docker on a local machine is the simplest way to run it for local networks. 
